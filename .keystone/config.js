@@ -1411,7 +1411,8 @@ async function createEncData(root, { amount, billing_name }, context) {
     "test-cba@mail.com",
     "test-dca@mail.com",
     "teste-cad@mail.com",
-    "namanjaswal007@gmail.com"
+    "namanjaswal007@gmail.com",
+    "harpreet.osmservices@gmail.com"
   ];
   if (emails.includes(context?.session?.data?.email)) {
     orderParams = {
@@ -1755,41 +1756,55 @@ var import_nanoid5 = require("nanoid");
 var nodeCCAvenue5 = require("node-ccavenue");
 var ccav4 = new nodeCCAvenue5.Configure({
   working_key: process.env.WORKING_KEY,
+  // Type assertion
   merchant_id: process.env.MERCHANT_ID
+  // Type assertion
 });
 var paymentCapture = async (req, res) => {
-  const userId = req.query.userId;
-  const planId = req.query.planId;
-  const context = req.context;
-  const sudo = context.sudo();
-  const userDetails = await sudo.query.User.findOne({
-    where: {
-      id: userId
-    },
-    query: "id name email azureId"
-  });
-  const planDetails = await sudo.query.Plan.findOne({
-    where: {
-      id: planId
-    },
-    query: "id name price"
-  });
-  const alphabet = "123456789ABCDEFGHJKLMNOPQRSTUVWXYZ";
-  const nanoid = (0, import_nanoid5.customAlphabet)(alphabet, 10);
-  const orderId = await nanoid();
-  const orderParams = {
-    order_id: orderId,
-    currency: "INR",
-    amount: planDetails.price,
-    redirect_url: encodeURIComponent(process.env.redirectUrl),
-    billing_name: userDetails.name
-  };
-  const encryptedOrder = ccav4.getEncryptedOrder(orderParams);
-  console.log("encryptedOrder", ccav4.redirectResponseToJson(encryptedOrder));
-  res.render("../payment-pages/payment.html", {
-    encReq: encryptedOrder,
-    accessCode: process.env.ACCESS_CODE
-  });
+  try {
+    const userId = req.query.userId;
+    const planId = req.query.planId;
+    const context = req.context;
+    const sudo = context.sudo();
+    const userDetails = await sudo.query.User.findOne({
+      where: { id: userId },
+      query: "id name email azureId"
+    });
+    if (!userDetails) {
+      return res.status(404).send("User not found");
+    }
+    const planDetails = await sudo.query.Plan.findOne({
+      where: { id: planId },
+      query: "id name price"
+    });
+    if (!planDetails) {
+      return res.status(404).send("Plan not found");
+    }
+    const alphabet = "123456789ABCDEFGHJKLMNOPQRSTUVWXYZ";
+    const nanoid = (0, import_nanoid5.customAlphabet)(alphabet, 10);
+    const orderId = nanoid();
+    const redirectUrl = process.env.redirectUrl;
+    if (!redirectUrl) {
+      throw new Error("Redirect URL is not defined in environment variables");
+    }
+    const orderParams = {
+      order_id: orderId,
+      currency: "INR",
+      amount: planDetails.price,
+      redirect_url: encodeURIComponent(redirectUrl),
+      billing_name: userDetails.name
+    };
+    console.log("order params============================", orderParams);
+    const encryptedOrder = ccav4.getEncryptedOrder(orderParams);
+    console.log("encryptedOrder", ccav4.redirectResponseToJson(encryptedOrder));
+    res.render("../payment-pages/payment.html", {
+      encReq: encryptedOrder,
+      accessCode: process.env.ACCESS_CODE
+    });
+  } catch (error) {
+    console.error("Error occurred while processing payment:", error);
+    res.status(500).send("Internal server error");
+  }
 };
 
 // keystone.ts
