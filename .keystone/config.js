@@ -691,24 +691,34 @@ var import_process3 = __toESM(require("process"));
 var import_nodemailer3 = require("nodemailer");
 async function sendMail3(to, subject, text17, useHtml = false, attachment) {
   const transporter = (0, import_nodemailer3.createTransport)({
-    //@ts-ignore
     host: import_process3.default.env.MAIL_HOST,
-    port: import_process3.default.env.MAIL_PORT,
+    port: Number(import_process3.default.env.MAIL_PORT),
+    secure: true,
     auth: {
       user: import_process3.default.env.MAIL_USERNAME,
       pass: import_process3.default.env.MAIL_SECRET
     }
   });
-  await transporter.sendMail({
-    from: import_process3.default.env.MAIL_FROM,
-    to: `${to}`,
-    subject,
-    ...useHtml ? { html: text17 } : { text: text17 }
-  });
+  try {
+    await transporter.sendMail({
+      from: import_process3.default.env.MAIL_FROM,
+      to: to.join(","),
+      subject,
+      ...useHtml ? { html: text17 } : { text: text17 },
+      ...attachment ? { attachments: [{ path: attachment }] } : {}
+    });
+    console.log("Email sent successfully to:", to);
+  } catch (error) {
+    console.error("Error occurred while sending email:", error);
+  }
 }
 async function sendWillMeetUpMail({ item }) {
-  await sendMail3(
+  const recipients = [
     import_process3.default.env.MAIL_WILLMEETUP_TO,
+    import_process3.default.env.MAIL_WILLMEETUP1_TO
+  ].filter((email) => email !== void 0);
+  await sendMail3(
+    recipients,
     `${item?.name} has requested to join #WILLMEETUP`,
     `<p>Dear Admin,</p></br>
     <p>We have a new request to join <strong>#WILLMEETUP</strong></br></br>
@@ -730,11 +740,10 @@ async function sendWillMeetUpMail({ item }) {
     <td style="border:0px">Company/ Organization:</td>
     <td style="border:0px">${item?.organization}</td>
   </tr>
-    </table
+    </table>
     <p>Regards</p> 
     <h4>Team WILL Forum </h4>`,
-    true,
-    ""
+    true
   );
 }
 
@@ -1175,20 +1184,24 @@ var import_process5 = __toESM(require("process"));
 var import_nodemailer6 = require("nodemailer");
 async function sendMail6(to, subject, text17, useHtml = false, attachment) {
   const transporter = (0, import_nodemailer6.createTransport)({
-    //@ts-ignore
     host: import_process5.default.env.MAIL_HOST,
-    port: import_process5.default.env.MAIL_PORT,
+    port: Number(import_process5.default.env.MAIL_PORT),
     auth: {
       user: import_process5.default.env.MAIL_USERNAME,
       pass: import_process5.default.env.MAIL_SECRET
     }
   });
-  await transporter.sendMail({
+  const mailOptions = {
     from: import_process5.default.env.MAIL_FROM,
     to: `${to}`,
     subject,
-    ...useHtml ? { html: text17 } : { text: text17 }
-  });
+    ...useHtml ? { html: text17 } : { text: text17 },
+    ...attachment ? { attachments: [{ path: attachment }] } : {}
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+  }
 }
 async function sendBuyPlanMail(to, name, level, order_number) {
   await sendMail6(
@@ -1397,7 +1410,8 @@ async function createEncData(root, { amount, billing_name }, context) {
     "test-cab@mail.com",
     "test-cba@mail.com",
     "test-dca@mail.com",
-    "teste-cad@mail.com"
+    "teste-cad@mail.com",
+    "namanjaswal007@gmail.com"
   ];
   if (emails.includes(context?.session?.data?.email)) {
     orderParams = {

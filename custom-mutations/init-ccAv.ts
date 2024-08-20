@@ -29,6 +29,7 @@ export async function createEncData(
     'test-cba@mail.com',
     'test-dca@mail.com',
     'teste-cad@mail.com',
+    'namanjaswal007@gmail.com'
   ];
   if (emails.includes(context?.session?.data?.email)) {
     orderParams = {

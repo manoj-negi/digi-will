@@ -6,25 +6,32 @@ async function sendMail(
   subject: string,
   text: string,
   useHtml = false,
-  attachment: String
+  attachment?: string
 ) {
   const transporter = createTransport({
-    //@ts-ignore
     host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
+    port: Number(process.env.MAIL_PORT),
     auth: {
-      user: process.env.MAIL_USERNAME,
-      pass: process.env.MAIL_SECRET,
+      user: process.env.MAIL_USERNAME, 
+      pass: process.env.MAIL_SECRET, 
     },
   });
 
-  await transporter.sendMail({
+  const mailOptions = {
     from: process.env.MAIL_FROM,
     to: `${to}`,
     subject,
     ...(useHtml ? { html: text } : { text }),
-  });
+    ...(attachment ? { attachments: [{ path: attachment }] } : {}),
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    // console.error(`Error occurred while sending email to ${to}:`, error);
+  }
 }
+
 
 export async function sendCredentialsMail(
   to: string,

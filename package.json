@@ -49,5 +49,8 @@
     "razorpay": "^2.8.3",
     "typescript": "^4.5.2"
   },
-  "repository": "https://github.com/CloudActive/cloud-stream/tree/master/services/api"
+  "repository": "https://github.com/CloudActive/cloud-stream/tree/master/services/api",
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.15"
+  }
 }
