@@ -36,7 +36,7 @@ export async function createEncData(
       order_id: orderId,
       currency: 'INR',
       amount: 1,
-      redirect_url: process.env.REDIRECT_URL+"/ccav/redirect_url",
+      redirect_url: process.env.REDIRECT_URL,
       billing_name: billing_name,
     };
   } else {
@@ -44,7 +44,7 @@ export async function createEncData(
       order_id: orderId,
       currency: 'INR',
       amount: amount,
-      redirect_url: process.env.REDIRECT_URL+"/ccav/redirect_url",
+      redirect_url: process.env.REDIRECT_URL,
       billing_name: billing_name,
     };
   }

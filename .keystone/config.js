@@ -1418,7 +1418,7 @@ async function createEncData(root, { amount, billing_name }, context) {
       order_id: orderId,
       currency: "INR",
       amount: 1,
-      redirect_url: process.env.REDIRECT_URL + "/ccav/redirect_url",
+      redirect_url: process.env.REDIRECT_URL,
       billing_name
     };
   } else {
@@ -1426,7 +1426,7 @@ async function createEncData(root, { amount, billing_name }, context) {
       order_id: orderId,
       currency: "INR",
       amount,
-      redirect_url: process.env.REDIRECT_URL + "/ccav/redirect_url",
+      redirect_url: process.env.REDIRECT_URL,
       billing_name
     };
   }
