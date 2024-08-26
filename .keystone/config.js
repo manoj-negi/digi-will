@@ -1411,27 +1411,24 @@ async function createEncData(root, { amount, billing_name }, context) {
     "test-cba@mail.com",
     "test-dca@mail.com",
     "teste-cad@mail.com",
-    "namanjaswal007@gmail.com",
-    "harpreet.osmservices@gmail.com"
+    "namanjaswal007@gmail.com"
   ];
   if (emails.includes(context?.session?.data?.email)) {
     orderParams = {
       order_id: orderId,
       currency: "INR",
       amount: 1,
-      redirect_url: process.env.REDIRECT_URL,
+      redirect_url: process.env.REDIRECT_URL + "/ccav/redirect_url",
       billing_name
     };
-    console.log(`Payment initated by ${billing_name} At ${/* @__PURE__ */ new Date()} for Amount 1 `);
   } else {
     orderParams = {
       order_id: orderId,
       currency: "INR",
       amount,
-      redirect_url: process.env.REDIRECT_URL,
+      redirect_url: process.env.REDIRECT_URL + "/ccav/redirect_url",
       billing_name
     };
-    console.log(`Payment initated by ${billing_name} At ${/* @__PURE__ */ new Date()} for Amount ${amount} `);
   }
   const encryptedOrder = ccav5.getEncryptedOrder(orderParams);
   return { encData: encryptedOrder };
@@ -1732,6 +1729,7 @@ var ccav2 = new nodeCCAvenue3.Configure({
   merchant_id: process.env.MERCHANT_ID
 });
 var ValidatePayment = (req, res) => {
+  console.log("Validate Payment=============================");
   const { encResp } = req.body;
   const decryptedJsonResponse = ccav2.redirectResponseToJson(encResp);
   console.log(
@@ -1783,7 +1781,7 @@ var paymentCapture = async (req, res) => {
     const alphabet = "123456789ABCDEFGHJKLMNOPQRSTUVWXYZ";
     const nanoid = (0, import_nanoid5.customAlphabet)(alphabet, 10);
     const orderId = nanoid();
-    const redirectUrl = process.env.redirectUrl;
+    const redirectUrl = process.env.REDIRECT_URL;
     if (!redirectUrl) {
       throw new Error("Redirect URL is not defined in environment variables");
     }
@@ -1791,7 +1789,7 @@ var paymentCapture = async (req, res) => {
       order_id: orderId,
       currency: "INR",
       amount: planDetails.price,
-      redirect_url: encodeURIComponent(redirectUrl),
+      redirect_url: redirectUrl,
       billing_name: userDetails.name
     };
     console.log("order params============================", orderParams);

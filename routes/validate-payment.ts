@@ -4,6 +4,7 @@ const ccav = new nodeCCAvenue.Configure({
   merchant_id: process.env.MERCHANT_ID,
 });
 export const ValidatePayment = (req: any, res: any) => {
+  console.log("Validate Payment=============================")
   const { encResp } = req.body;
   const decryptedJsonResponse = ccav.redirectResponseToJson(encResp);
   console.log(

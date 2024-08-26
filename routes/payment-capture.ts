@@ -37,16 +37,17 @@ export const paymentCapture = async (req: Request, res: Response) => {
     const nanoid = customAlphabet(alphabet, 10);
     const orderId = nanoid();
 
-    const redirectUrl = process.env.redirectUrl;
+    // const redirectUrl = process.env.REDIRECT_URL;
+    const redirectUrl = process.env.REDIRECT_URL;
     if (!redirectUrl) {
       throw new Error('Redirect URL is not defined in environment variables');
     }
-
+    
     const orderParams = {
       order_id: orderId,
       currency: 'INR',
       amount: planDetails.price,
-      redirect_url: encodeURIComponent(redirectUrl),
+      redirect_url: redirectUrl,
       billing_name: userDetails.name,
     };
 

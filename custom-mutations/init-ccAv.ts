@@ -36,19 +36,17 @@ export async function createEncData(
       order_id: orderId,
       currency: 'INR',
       amount: 1,
-      redirect_url: process.env.REDIRECT_URL,
+      redirect_url: process.env.REDIRECT_URL+"/ccav/redirect_url",
       billing_name: billing_name,
     };
-    console.log(`Payment initated by ${billing_name} At ${new Date()} for Amount 1 `);
   } else {
     orderParams = {
       order_id: orderId,
       currency: 'INR',
       amount: amount,
-      redirect_url: process.env.REDIRECT_URL,
+      redirect_url: process.env.REDIRECT_URL+"/ccav/redirect_url",
       billing_name: billing_name,
     };
-    console.log(`Payment initated by ${billing_name} At ${new Date()} for Amount ${amount} `);
   }
   const encryptedOrder = ccav.getEncryptedOrder(orderParams);
   return { encData: encryptedOrder };
