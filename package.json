@@ -51,6 +51,7 @@
   },
   "repository": "https://github.com/CloudActive/cloud-stream/tree/master/services/api",
   "devDependencies": {
+    "@types/graphql-upload": "^16.0.7",
     "@types/nodemailer": "^6.4.15"
   }
 }

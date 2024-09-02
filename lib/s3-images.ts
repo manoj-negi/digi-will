@@ -12,7 +12,7 @@ export const s3Config: S3Config = {
   },
   uploadParams() {
     return {
-      ACL: 'public-read', // needed to make it public
+      ACL: null, // needed to make it public
     };
   },
 };

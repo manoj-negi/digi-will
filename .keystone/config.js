@@ -143,7 +143,7 @@ var s3Config = {
   },
   uploadParams() {
     return {
-      ACL: "public-read"
+      ACL: null
       // needed to make it public
     };
   }
@@ -1146,37 +1146,36 @@ var prepareFile = (filename, fileBytes) => {
   upload.resolve({
     createReadStream: () => bufferToStream(Buffer.from(fileBytes)),
     filename,
-    // @ts-ignore
     mimetype: "application/pdf",
     encoding: "utf-8"
   });
   return { upload };
 };
 async function sendCertificate(root, { id, planId }, context) {
-  const user = await context.sudo().db.User.findOne({
-    where: {
-      id
+  try {
+    const user = await context.sudo().db.User.findOne({
+      where: { id }
+    });
+    const plan = await context.sudo().db.Plan.findOne({
+      where: { id: planId }
+    });
+    if ([3, 4].includes(plan?.srNo)) {
+      return;
     }
-  });
-  const plan = await context.sudo().db.Plan.findOne({
-    where: {
-      id: planId
-    }
-  });
-  if ([3, 4].includes(plan?.srNo)) {
-    console.log(`${plan.name} is not enabled for sending certificates`);
-    return;
+    const pdfBytes = await generatePdf(plan, user);
+    const certificateData = await context.sudo().query.Certificate.createOne({
+      data: {
+        user: { connect: { id } },
+        certificate: prepareFile("will-certificate.pdf", pdfBytes)
+      },
+      query: "id certificate { url }"
+    });
+    await sendCertificateMail(user.email, user.name, certificateData?.certificate?.url, plan);
+    return certificateData;
+  } catch (error) {
+    console.error("Error sending certificate:", error);
+    throw error;
   }
-  const pdfBytes = await generatePdf(plan, user);
-  const certificateData = await context.sudo().query.Certificate.createOne({
-    data: {
-      user: { connect: { id } },
-      certificate: prepareFile("will-certificate.pdf", pdfBytes)
-    },
-    query: "id certificate { url }"
-  });
-  await sendCertificateMail(user.email, user.name, certificateData?.certificate?.url, plan);
-  return certificateData;
 }
 
 // utils/mail.ts
