@@ -10,6 +10,8 @@
     "__postinstall": "keystone postinstall"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.645.0",
+    "@aws-sdk/client-s3": "^3.645.0",
     "@azure/identity": "^3.0.0",
     "@babel/core": "^7.16.0",
     "@babel/plugin-transform-runtime": "^7.16.4",
@@ -27,6 +29,7 @@
     "@pdf-lib/fontkit": "^1.1.1",
     "@preconstruct/cli": "^2.1.5",
     "@tinymce/tinymce-react": "^4.0.0",
+    "axios": "^1.7.7",
     "azure-ad-jwt-v2": "^2.1.4",
     "azure-storage": "^2.10.7",
     "babel-jest": "^29.0.3",
