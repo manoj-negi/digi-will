@@ -714,8 +714,7 @@ async function sendMail3(to, subject, text17, useHtml = false, attachment) {
 }
 async function sendWillMeetUpMail({ item }) {
   const recipients = [
-    import_process3.default.env.MAIL_WILLMEETUP_TO,
-    import_process3.default.env.MAIL_WILLMEETUP1_TO
+    import_process3.default.env.MAIL_WILLMEETUP_TO
   ].filter((email) => email !== void 0);
   await sendMail3(
     recipients,
@@ -1072,7 +1071,7 @@ var generatePdf = async (plan, user) => {
   const { width, height } = firstPage.getSize();
   firstPage.drawText(user.name, {
     x: 310,
-    y: 350,
+    y: 360,
     size: 28,
     font: helveticaFont,
     color: (0, import_pdf_lib.rgb)(0, 0, 0)

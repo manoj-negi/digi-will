@@ -34,8 +34,7 @@ async function sendMail(
 
 export async function sendWillMeetUpMail({ item }: any) {
   const recipients = [
-    process.env.MAIL_WILLMEETUP_TO,
-    process.env.MAIL_WILLMEETUP1_TO
+    process.env.MAIL_WILLMEETUP_TO
   ].filter((email): email is string => email !== undefined);
 
   await sendMail(
