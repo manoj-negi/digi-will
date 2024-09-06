@@ -9,9 +9,9 @@ export const generatePdf = async (plan: any, user: any) => {
   const existingPdfBytes = await fetch(
     `${process.env.SERVER_URL}/files/pdf/${
       plan.srNo === 1
-        ? 'WillCertificateLevel1.pdf'
-        : plan.srNo === 2
         ? 'WillCertificateLevel2.pdf'
+        : plan.srNo === 2
+        ? 'WillCertificateLevel1.pdf'
         : plan.srNo === 3
         ? 'WillCertificateLevel3.pdf'
         : plan.srNo === 4
