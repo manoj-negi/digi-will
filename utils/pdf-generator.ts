@@ -29,7 +29,7 @@ export const generatePdf = async (plan: any, user: any) => {
   const { width, height } = firstPage.getSize();
   firstPage.drawText(user.name, {
     x: 310,
-    y: 320,
+    y: 360,
     size: 28,
     font: helveticaFont,
     color: rgb(0, 0, 0),
