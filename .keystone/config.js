@@ -93,7 +93,7 @@ var User = list({
     operation: {
       create: access.isAdmin,
       update: access.isLoggedIn,
-      delete: access.isAdmin,
+      delete: access.isLoggedIn,
       query: access.isLoggedIn
     },
     filter: {
